@@ -1,0 +1,14 @@
+
+npm run 
+
+cd C:\Users\admin\Documents\UNI\Capstone2\WebPageMaven\AnimalKingdomWebPage\front-end
+
+correr estos dos en terminales separados pendiente pq se pueden caer solos
+"dev:webpack": "webpack --mode development -w"
+"watch:sass": "node-sass src/SASS/main.scss ../src/main/resources/static/CSS/style.css -w"
+
+
+corre js y pone en carpeta
+"build:webpack": "webpack --mode production"   
+corre js y pone en carpeta
+"build:css": "npm-run-all compile:sass prefix:css compress:css"

@@ -1,0 +1,99 @@
+.wrapper {
+    display: flex;
+    align-items: stretch;
+  }
+  
+  #sidebar {
+    min-width: 25rem;
+    max-width: 25rem;
+    min-height: 100vh;
+    background-color: white;
+    padding: 2rem;
+    transition: all 0.3s;
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 40px;
+    margin-left: -25rem;
+    z-index: 500;
+  }
+  
+  #sidebar.active {
+    margin-left: 0;
+  }
+  
+  .overlay {
+    display: none;
+    position: fixed;
+    /* full screen */
+    margin-top: 25px;
+    width: 100vw;
+    height: 100vh;
+    /* transparent black */
+    background: rgba(0, 0, 0, 0.7);
+    /* middle layer, i.e. appears below the sidebar */
+    z-index: 150;
+    opacity: 0;
+    /* animate the transition */
+    transition: all 0.3s;
+  
+    top: 40px;
+  }
+  /* display .overlay when it has the .active class */
+  .overlay.active {
+    display: block;
+    opacity: 1;
+  }
+  
+  .dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+  }
+  
+  .sidebar-item{
+    //padding: .5rem;
+    //margin-bottom: 1rem;
+    color: black;
+    & a{
+      color: black;
+      width: 100%;
+      text-align: left;
+      padding: 1.1rem;
+      //background-color: #3a3b5d;
+      border-radius: 5px;
+      font-size: large;
+      &:hover{
+        text-decoration: none;
+        color: rgb(10, 10, 10);
+        background-color: lightblue;
+        & svg {
+          color: #1798ac;
+        }
+      }
+    }
+  }
+  hr{
+    //color: $color-white;
+    background-color: rgb(141, 141, 141);
+    //margin-left: -2rem;
+    //margin-right: -2rem;
+  }
+  
+  .sidebar-header{
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  
+    &--text{
+      font-size: large;
+      text-align: center;
+      font-weight: 200;
+      letter-spacing: .2rem;
+      color: black;
+    }
+  }
