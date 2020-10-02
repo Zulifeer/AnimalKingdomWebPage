@@ -39,7 +39,7 @@
         
         <% }else {%>
         <a class="dropdown-item" href="/login">SignIn</a>
-        <a class="dropdown-item" href="/SignUp">SignUp</a>
+        <a class="dropdown-item" href="/signup">SignUp</a>
         <% } %>
       </div>
     </li>

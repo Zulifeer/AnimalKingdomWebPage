@@ -16,8 +16,12 @@
                         SignUp
                     </h2>
                 </div>
+                <div class="form-group mb-5" id="SignUpName">
+                    <input type="text" name="name" id="name" placeholder="Name" class="form-control">
+                    <label id="nameerror"></label>
+                </div>
                 <div class="form-group" id="SignUpusername">
-                    <input type="text" name="username" id="username" placeholder="Name" class="form-control">
+                    <input type="text" name="username" id="username" placeholder="Username" class="form-control">
                     <label id="usernameerror"></label>
                 </div>
                 <div class="form-group" id="SignUpemail">

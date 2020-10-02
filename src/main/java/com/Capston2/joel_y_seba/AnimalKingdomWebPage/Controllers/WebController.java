@@ -95,17 +95,19 @@ public class WebController {
     }
 
     @PostMapping(value = "/signup")
-    public String SingUp(@RequestParam("username") String name, 
+    public String SingUp(@RequestParam("username") String username, 
     @RequestParam("email") String email, 
-    @RequestParam("password") String password){
+    @RequestParam("password") String password,
+    @RequestParam("name") String name){
         
         RoleUser roleUser = new RoleUser();
         Users newUser = new Users();
         
+        newUser.setName(name);
         newUser.setEmail(email);
         newUser.setEnabled(Byte.valueOf("1"));
         newUser.setPass(new BCryptPasswordEncoder().encode(password));
-        newUser.setUsername(name);
+        newUser.setUsername(username);
         userRepo.save(newUser);
 
         long role = 2;
@@ -113,7 +115,7 @@ public class WebController {
 
         roleUser.setDate(new Date(millis));
         roleUser.setRole_id(roleRepo.findById(role).get());
-        roleUser.setUser_id(userRepo.findByUsername(name));
+        roleUser.setUser_id(userRepo.findByUsername(username));
 
         roleUserRepo.save(roleUser);
         

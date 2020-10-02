@@ -1,5 +1,7 @@
 package com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,6 +13,7 @@ public class Type {
 
     @Id
     @Column(name = "typeID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long typeID;
 
     @Column(name = "name",  length = 25)

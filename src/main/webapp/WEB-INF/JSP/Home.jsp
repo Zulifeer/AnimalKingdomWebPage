@@ -19,14 +19,6 @@
           </main>
         </div>
         <div id="overlay" class="overlay"></div>
-        <!--
-        <div class="form__group">
-          <center><a href="/login"><button class="btn-submit" type="submit" >Login</button></a>
-        </div>
-        <div class="form__group">
-          <center><a href="/signup"><button class="btn-submit" type="submit" >SignUp</button></a></center>
-        </div>
-        -->
       </div>
     </div>
     <script type="application/javascript" src="/JS/bundle.js"></script>

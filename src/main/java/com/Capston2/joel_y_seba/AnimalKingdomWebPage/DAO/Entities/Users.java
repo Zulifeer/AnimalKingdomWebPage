@@ -23,6 +23,8 @@ public class Users {
     private Byte enabled;
     @Column(name="email", nullable = false)
     private String email;
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
 
     public Users() {
     }
@@ -60,14 +62,6 @@ public class Users {
         this.id = id;
     }
 
-    public Users(Long id, String username, String pass, Byte enabled, String email) {
-        this.id = id;
-        this.username = username;
-        this.pass = pass;
-        this.enabled = enabled;
-        this.email = email;
-    }
-
     public Byte getEnabled() {
         return enabled;
     }
@@ -80,10 +74,27 @@ public class Users {
         this.email = email;
     }
 
+    public Users(Long id, String username, String pass, Byte enabled, String email, String name) {
+        this.id = id;
+        this.username = username;
+        this.pass = pass;
+        this.enabled = enabled;
+        this.email = email;
+        this.name = name;
+    }
+
     @Override
     public String toString() {
-        return "Users [email=" + email + ", enabled=" + enabled + ", id=" + id + ", pass=" + pass + ", username="
-                + username + "]";
+        return "Users [email=" + email + ", enabled=" + enabled + ", id=" + id + ", name=" + name + ", pass=" + pass
+                + ", username=" + username + "]";
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     
