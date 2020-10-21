@@ -24,6 +24,9 @@ public class Animal {
     @Column(name = "description", length = 255)
     private String description;
 
+    @Column(name = "imagePath", length = 255)
+    private String imagePath;
+
     @ManyToOne
     @JoinColumn(name = "enviromentID", nullable = false)
     private Enviroment enviromentId;
@@ -75,15 +78,16 @@ public class Animal {
     @Override
     public String toString() {
         return "Animal [animlalID=" + animlalID + ", description=" + description + ", enviromentId=" + enviromentId
-                + ", name=" + name + ", typeID=" + typeID + "]";
+                + ", name=" + name + ", typeID=" + typeID + ", imagePath=" + imagePath +"]";
     }
 
-    public Animal(Long animlalID, String name, String description, Enviroment enviromentId, Type typeID) {
+    public Animal(Long animlalID, String name, String description, Enviroment enviromentId, Type typeID, String imagePath) {
         this.animlalID = animlalID;
         this.name = name;
         this.description = description;
         this.enviromentId = enviromentId;
         this.typeID = typeID;
+        this.imagePath = imagePath;
     }
 
     public Animal() {

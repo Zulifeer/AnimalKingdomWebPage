@@ -16,6 +16,11 @@
           <%@ include file="Partials/sidebar.jsp" %>
           <main>
             <%@ include file="Partials/navbar.jsp" %>
+
+            <a href="/sec/Admin/AddEmployee"><h1>Add Employee</h1></a>
+            <a href="/sec/Admin/AddAnimal"><h1>Add Animal</h1></a>
+            <a href="/sec/Admin/AddEnviroment"><h1>Add Enviroment</h1></a>
+            
           </main>
         </div>
         <div id="overlay" class="overlay"></div>

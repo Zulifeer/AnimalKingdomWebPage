@@ -20,7 +20,7 @@ public class Employee {
     @Column(name="enabled")
     private Byte enabled;
     @OneToOne
-    @JoinColumn(name = "authority_id",nullable = false)
+    @JoinColumn(name = "user_id",nullable = false)
     private Users user_id;
 
     public Employee() {

@@ -7,7 +7,7 @@
     <title>Admin Page</title>
   </head>
   <body>
-      <p>Welcom to animals</p>
+      <p>Welcome to animals</p>
   </body>
   <script type="application/javascript" src="/JS/bundle.js"></script>
 </html>
