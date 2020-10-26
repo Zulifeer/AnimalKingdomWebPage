@@ -93,5 +93,13 @@ public class Animal {
     public Animal() {
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
     
 }

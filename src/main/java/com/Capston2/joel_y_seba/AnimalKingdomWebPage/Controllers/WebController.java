@@ -1,8 +1,15 @@
 package com.Capston2.joel_y_seba.AnimalKingdomWebPage.Controllers;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.Principal;
 import java.sql.Date;
+import java.util.List;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
+import com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.Animal;
 import com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.Employee;
 import com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.Enviroment;
 import com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.RoleUser;
@@ -24,8 +31,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import jdk.jfr.Description;
+import org.springframework.web.multipart.MultipartFile;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,20 +61,21 @@ public class WebController {
     @Autowired
     EmployeeRepo employeeRepo;
 
-    @GetMapping(value = {"/","/index"})
-    public String Home(Model model, Principal user, Authentication auth){
-        if(user != null && auth.isAuthenticated()){
-            if(userRepo.findByUsername(user.getName()).getEnabled() != 1){
+    @GetMapping(value = { "/", "/index" })
+    public String Home(Model model, Principal user, Authentication auth) {
+        if (user != null && auth.isAuthenticated()) {
+            if (userRepo.findByUsername(user.getName()).getEnabled() != 1) {
                 model.addAttribute("user", user.getName());
                 return "AccountDesaible";
             }
             model.addAttribute("user", user.getName());
-            boolean isAdmin = auth.getAuthorities().stream().anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
+            boolean isAdmin = auth.getAuthorities().stream()
+                    .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
             model.addAttribute("isAdmin", isAdmin);
 
-            boolean isUser = auth.getAuthorities().stream().anyMatch((authority -> authority.getAuthority().equals("USER")));
+            boolean isUser = auth.getAuthorities().stream()
+                    .anyMatch((authority -> authority.getAuthority().equals("USER")));
             model.addAttribute("isUser", isUser);
-            
 
         }
 
@@ -76,10 +83,10 @@ public class WebController {
     }
 
     @GetMapping(value = "/login")
-    public String Login(Principal user){
-        
-        if(user != null && ((Authentication) user ).isAuthenticated()){
-            //logger.info("USER NAME: " + user.getName());
+    public String Login(Principal user) {
+
+        if (user != null && ((Authentication) user).isAuthenticated()) {
+            // logger.info("USER NAME: " + user.getName());
             return "redirect:/";
         }
 
@@ -87,31 +94,29 @@ public class WebController {
     }
 
     @GetMapping(value = "/animals")
-    public String Animals(){
- 
+    public String Animals() {
+
         return "Animals";
     }
 
     @GetMapping(value = "/signup")
-    public String SingUp(){
+    public String SingUp() {
 
         return "SignUp";
     }
 
-    @PostMapping(value="/logout")
-    public String logout(){
+    @PostMapping(value = "/logout")
+    public String logout() {
         return "redirect:/login";
     }
 
     @PostMapping(value = "/signup")
-    public String SingUp(@RequestParam("username") String username, 
-    @RequestParam("email") String email, 
-    @RequestParam("password") String password,
-    @RequestParam("name") String name){
-        
+    public String SingUp(@RequestParam("username") String username, @RequestParam("email") String email,
+            @RequestParam("password") String password, @RequestParam("name") String name) {
+
         RoleUser roleUser = new RoleUser();
         Users newUser = new Users();
-        
+
         newUser.setName(name);
         newUser.setEmail(email);
         newUser.setEnabled(Byte.valueOf("1"));
@@ -127,36 +132,37 @@ public class WebController {
         roleUser.setUser_id(userRepo.findByUsername(username));
 
         roleUserRepo.save(roleUser);
-        
+
         return "redirect:/Login";
     }
 
     @GetMapping(value = "/sec/admin")
-    public String AdminApp(Model model, Principal user, Authentication auth){
-        
+    public String AdminApp(Model model, Principal user, Authentication auth) {
+
         model.addAttribute("user", user.getName());
-        boolean isAdmin = auth.getAuthorities().stream().anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
         model.addAttribute("isAdmin", isAdmin);
-        
+
         return "Admin";
     }
 
     @GetMapping(value = "/sec/Admin/AddEmployee")
-    public String AddEmployee(Model model, Principal user, Authentication auth){
+    public String AddEmployee(Model model, Principal user, Authentication auth) {
         model.addAttribute("user", user.getName());
-        boolean isAdmin = auth.getAuthorities().stream().anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
         model.addAttribute("isAdmin", isAdmin);
         return "AddEmployee";
     }
 
-    @PostMapping(value = "/sec/Admin/AddEmployee") 
+    @PostMapping(value = "/sec/Admin/AddEmployee")
     public String AddEmployee(Model model, Principal user, Authentication auth,
-    @RequestParam("username") String username, 
-    @RequestParam("email") String email, 
-    @RequestParam("password") String password,
-    @RequestParam("name") String name){
+            @RequestParam("username") String username, @RequestParam("email") String email,
+            @RequestParam("password") String password, @RequestParam("name") String name) {
         model.addAttribute("user", user.getName());
-        boolean isAdmin = auth.getAuthorities().stream().anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
         model.addAttribute("isAdmin", isAdmin);
 
         RoleUser roleUser = new RoleUser();
@@ -164,9 +170,9 @@ public class WebController {
         Employee employee = new Employee();
 
         // verify that the employee dosent exist.
-        if(!(userRepo.itExists(username)  && employeeRepo.itExists(userRepo.findByUsername(username).getId()))){
-            //check that the user dosent exist.
-            if(!userRepo.itExists(username)){
+        if (!(userRepo.itExists(username) && employeeRepo.itExists(userRepo.findByUsername(username).getId()))) {
+            // check that the user dosent exist.
+            if (!userRepo.itExists(username)) {
 
                 newUser.setEmail(email);
                 newUser.setEnabled(Byte.valueOf("1"));
@@ -189,7 +195,7 @@ public class WebController {
                 roleUser.setUser_id(userRepo.findByUsername(username));
                 model.addAttribute("epmloyeeAdded", true);
 
-            }else{
+            } else {
                 model.addAttribute("userExist", true);
             }
 
@@ -199,22 +205,66 @@ public class WebController {
 
         return "AddEmployee";
     }
-    
+
     @GetMapping(value = "/sec/Admin/AddAnimal")
-    public String AddAnimal(Model model, Principal user, Authentication auth){
+    public String AddAnimal(Model model, Principal user, Authentication auth) {
         model.addAttribute("user", user.getName());
-        boolean isAdmin = auth.getAuthorities().stream().anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
         model.addAttribute("isAdmin", isAdmin);
+
+        List<Enviroment> env = enviromentRepo.findAll();
+        List<Type> type = typeRepo.findAll();
+        model.addAttribute("env", env);
+        model.addAttribute("type", type);
         return "AddAnimal";
     }
 
     @PostMapping(value = "/sec/Admin/AddAnimal")
-    public String AddAnimal(Model model, Principal user, Authentication auth,
-    @RequestParam("username") String username){
-        model.addAttribute("user", user.getName());
+    public String AddAnimal(Model model, Principal user, Authentication auth, HttpServletRequest request,
+            @RequestParam("name") String name, @RequestParam("enviroment_search") Long enviroment_id, 
+            @RequestParam("description") String description,
+            @RequestParam("type_search") Long type_id,
+            @RequestParam("img") MultipartFile img) throws IllegalStateException, IOException {
+        
+                model.addAttribute("user", user.getName());
         boolean isAdmin = auth.getAuthorities().stream().anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
         model.addAttribute("isAdmin", isAdmin);
         
+        Animal newAnimal = new Animal();
+        UUID uuid = UUID.randomUUID();
+
+        if(!animalRepo.itExistsByName(name)){
+            newAnimal.setName(name);
+            newAnimal.setDescription(description);
+            newAnimal.setEnviromentId(enviromentRepo.findByID(enviroment_id));
+            newAnimal.setTypeID(typeRepo.findByID(type_id));
+            if(!img.isEmpty()){
+                String actualPath = "/AnimalIMG/"+ user.getName() + "/" + uuid.toString() + img.getOriginalFilename();
+                String path = request.getSession().getServletContext().getRealPath(actualPath);
+                File dirPath = new File(path);
+                
+                if (!dirPath.exists()) {
+                    dirPath.mkdirs();
+                }
+    
+                newAnimal.setImagePath(actualPath);
+                img.transferTo(dirPath);
+                
+            }else{
+                newAnimal.setImagePath("/IMG/img-not-available.png");
+            }
+
+            animalRepo.save(newAnimal);
+            model.addAttribute("animalAdded", true);
+        }else{
+            model.addAttribute("animalExists", true);
+        }
+
+        List<Enviroment> env = enviromentRepo.findAll();
+        List<Type> type = typeRepo.findAll();
+        model.addAttribute("env", env);
+        model.addAttribute("type", type);
         
        
         return "AddAnimal";
@@ -239,9 +289,9 @@ public class WebController {
 
         Enviroment newEnviroment  = new  Enviroment();
 
-        if(!enviromentRepo.itExists(name)){
+        if(!enviromentRepo.itExistsByName(name)){
             newEnviroment.setName(name);
-            newEnviroment.setType(type);
+            newEnviroment.setType(type); 
             newEnviroment.setDescription(description);
 
             enviromentRepo.save(newEnviroment);
@@ -271,9 +321,7 @@ public class WebController {
 
         Type newType = new Type();
 
-        Type check = typeRepo.findByName(name);
-
-        if(check.getName() == null){
+        if(!typeRepo.itExists(name)){
             //add info
             newType.setName(name);
             newType.setDescription(description);

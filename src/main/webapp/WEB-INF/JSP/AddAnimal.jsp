@@ -1,3 +1,8 @@
+<%@ page import="java.util.List" %> 
+<%@ page import="com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.Type" %>
+<%@ page import="java.util.List" %> 
+<%@ page import="com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.Enviroment" %>
+
 <!DOCTYPE html>
 <html lang="en">
   <link rel="stylesheet" href="/CSS/style.css">
@@ -17,16 +22,22 @@
           <main>
             <%@ include file="Partials/navbar.jsp" %>
              
-             <form method="POST" action="/sec/Admin/AddEmployee" class="input_forms">
+             <form method="POST" action="/sec/Admin/AddAnimal" class="input_forms"  enctype="multipart/form-data">
               <div class="form__group">
-                <input type="text" name="username" id="username" placeholder="Username" class="form__input">
-                <br>
                 <input type="text" name="name" id="name" placeholder="Name" class="form__input">
                 <br>
-                <input type="text" name="email" id="email" placeholder="Email" class="form__input">
+                
+                <label for="description">Animal Description</label>
+                <textarea 
+                  class="form-control"
+                  id="description"
+                  rows="3"
+                  placeholder="description"
+                  name="description"
+                  maxlength="200">
+                </textarea>
                 <br>
-                <input type="password" name="password" id="password" placeholder="Pasword" class="form__input">
-                <br>
+                
                 <input
                 type="file"
                 accept="img/*"
@@ -34,10 +45,36 @@
                 name="img"
                 />
                 <br>
+                
+                <label>Select an Enviroment</label>
+                <select class="selectpicker" name="enviroment_search">
+                  <% List<Enviroment> env = (List<Enviroment>) request.getAttribute("env");
+                    for(int i =0; i < env.size(); i++){
+                    %>
+                    <option value="<%= env.get(i).getEnvirmonetID() %>"><%= env.get(i).getName() %></option>
+                    <% } %>
+                </select>
+                <br>
+                
+                <label>Select the Race of the Animal</label>
+                <select class="selectpicker" name="type_search">
+                  <% List<Type> type = (List<Type>) request.getAttribute("type");
+                    for(int i =0; i < type.size(); i++){
+                    %>
+                    <option value="<%= type.get(i).getTypeID() %>"><%= type.get(i).getName() %></option>
+                    <% } %>
+                </select>
+                <br>
                 <button class="btn-submit" type="submit">Add Animal</button>
-                <% if(request.getAttribute("animalExists") != null){%>
+                
+                <% if(request.getAttribute("animalAdded") != null){%>
                   <p> The animal has been added.</p>
                 <%}%>
+
+                <% if(request.getAttribute("animalExists") != null){%>
+                  <p> The animal allready exists.</p>
+                <%}%>
+                
               </div>
               <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
              </form>

@@ -25,14 +25,17 @@
                   class="form-control"
                   id="description"
                   rows="3"
-                  placeholder="Description"
-                  name="Description"
+                  placeholder="description"
+                  name="description"
                   maxlength="200">
                 </textarea>
                 <br>
                 <button class="btn-submit" type="submit">Add Animal Category</button>
-                <% if(request.getAttribute("categoryExists") != null){%>
+                <% if(request.getAttribute("typeAdded") != null){%>
                   <p> The category has been added.</p>
+                <%}%>
+                <% if(request.getAttribute("typeExist") != null){%>
+                  <p> The category alleready exists.</p>
                 <%}%>
               </div>
               <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

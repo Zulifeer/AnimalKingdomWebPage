@@ -29,6 +29,12 @@
                 <br>
                 <button class="btn-submit" type="submit">Sing Up Employee</button>
                 <% if(request.getAttribute("employeeExists") != null){%>
+                  <p> The employee already exists.</p>
+                <%}%>
+                <% if(request.getAttribute("userExist") != null){%>
+                  <p> The user exists but is not employee.</p>
+                <%}%>
+                <% if(request.getAttribute("epmloyeeAdded") != null){%>
                   <p> The employee has been added.</p>
                 <%}%>
               </div>
