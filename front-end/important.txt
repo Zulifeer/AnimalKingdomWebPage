@@ -12,3 +12,5 @@ corre js y pone en carpeta
 "build:webpack": "webpack --mode production"   
 corre js y pone en carpeta
 "build:css": "npm-run-all compile:sass prefix:css compress:css"
+
+q 

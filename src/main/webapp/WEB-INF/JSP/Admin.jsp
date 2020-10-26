@@ -14,13 +14,49 @@
         </div>
         <div class="wrapper">
           <%@ include file="Partials/sidebar.jsp" %>
-          <main>
+          <main class="admin-main">
             <%@ include file="Partials/navbar.jsp" %>
+            <div class = "main-view">
+              <a href="/sec/Admin/AddEmployee"><p>Add Employee</p></a>
+              
+              <a href="/sec/Admin/AddAnimal"><p>Add Animal</p></a>
+              
+              <a href="/sec/Admin/AddEnviroment"><p>Add Enviroment</p></a>
+              
+              <a href="/sec/Admin/AddType"><p>Add Type</p></a>  
+            </div>
+            
+            <div class="admin-tables">
 
-            <a href="/sec/Admin/AddEmployee"><h1>Add Employee</h1></a>
-            <a href="/sec/Admin/AddAnimal"><h1>Add Animal</h1></a>
-            <a href="/sec/Admin/AddEnviroment"><h1>Add Enviroment</h1></a>
-            <a href="/sec/Admin/AddType"><h1>Add Type</h1></a>
+              <div class="user-table">
+
+              <label for="user-table"><h1>All Users</h1></label>
+                <table class="table table-bordered table-hover" id="user-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">ID</th>
+                      <th scope="col">Username</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Enabed</th>
+                    </tr>
+                  </thead> 
+                </table>
+              </div>
+              
+              <div class="animal-table">
+              <label for="animal-table"><h1>All Animals</h1></label>
+                <table class="table table-bordered table-hover table-dark" id="animal-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">ID</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Enabled</th>
+                    </tr>
+                  </thead> 
+                </table>
+              </div>
+            </div>
+            
           </main>
         </div>
         <div id="overlay" class="overlay"></div>

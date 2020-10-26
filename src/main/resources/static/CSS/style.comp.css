@@ -7251,6 +7251,7 @@ hr {
 .main-view {
   align-items: center;
   display: flex;
+  min-height: calc(100vh - 143.2px);
   flex-direction: row;
   padding: 2rem;
   transition: all 0.3s;
@@ -7260,26 +7261,8 @@ hr {
     color: #000000;
     font-size: large; }
 
-.admin-tables {
-  display: flex;
-  flex-direction: row;
-  min-width: 100%;
-  justify-content: space-between; }
-
 .user-table {
-  width: 48%;
-  display: flex;
-  flex-direction: column; }
-  .user-table label {
-    align-content: center;
-    text-align: center;
-    font-size: large; }
+  width: 50%; }
 
 .animal-table {
-  width: 50%;
-  display: flex;
-  flex-direction: column; }
-  .animal-table label {
-    align-content: center;
-    text-align: center;
-    font-size: large; }
+  width: 50%; }
