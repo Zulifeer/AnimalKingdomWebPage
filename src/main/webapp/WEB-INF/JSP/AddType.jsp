@@ -16,31 +16,31 @@
           <%@ include file="Partials/sidebar.jsp" %>
           <main>
             <%@ include file="Partials/navbar.jsp" %>
-             
-             <form method="POST" action="/sec/Admin/AddType" class="input_forms">
-              <div class="form__group">
-                <input type="text" name="name" id="name" placeholder="Category Name" class="form__input">
-                <br>
-                <textarea 
-                  class="form-control"
-                  id="description"
-                  rows="3"
-                  placeholder="description"
-                  name="description"
-                  maxlength="200">
-                </textarea>
-                <br>
-                <button class="btn-submit" type="submit">Add Animal Category</button>
-                <% if(request.getAttribute("typeAdded") != null){%>
-                  <p> The category has been added.</p>
-                <%}%>
-                <% if(request.getAttribute("typeExist") != null){%>
-                  <p> The category alleready exists.</p>
-                <%}%>
-              </div>
-              <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-             </form>
-
+             <div class="main-view">
+                <form method="POST" action="/sec/Admin/AddType" class="input_forms">
+                  <div class="form__group">
+                    <input type="text" name="name" id="name" placeholder="Category Name" class="form__input">
+                    <br>
+                    <textarea 
+                      class="form-control"
+                      id="description"
+                      rows="3"
+                      placeholder="description"
+                      name="description"
+                      maxlength="200">
+                    </textarea>
+                    <br>
+                    <button class="btn-submit" type="submit">Add Animal Category</button>
+                    <% if(request.getAttribute("typeAdded") != null){%>
+                      <p> The category has been added.</p>
+                    <%}%>
+                    <% if(request.getAttribute("typeExist") != null){%>
+                      <p> The category alleready exists.</p>
+                    <%}%>
+                  </div>
+                  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+             </div>
           </main>
         </div>
         <div id="overlay" class="overlay"></div>

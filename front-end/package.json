@@ -42,10 +42,12 @@
     "@popperjs/core": "^2.4.4",
     "bootstrap": "^4.5.2",
     "chart.js": "^2.9.3",
-    "datatables.net": "^1.10.21",
+    "datatables.net": "^1.10.22",
     "datatables.net-bs4": "^1.10.21",
+    "datatables.net-dt": "^1.10.22",
     "datatables.net-responsive-bs4": "^2.2.5",
     "jquery": "^3.5.1",
-    "popper.js": "^1.16.1"
+    "popper.js": "^1.16.1",
+    "three": "^0.122.0"
   }
 }

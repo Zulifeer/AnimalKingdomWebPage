@@ -14,8 +14,12 @@
         </div>
         <div class="wrapper">
           <%@ include file="Partials/sidebar.jsp" %>
-          <main>
+          <main class="content">
             <%@ include file="Partials/navbar.jsp" %>
+            
+            <div id ="3d-model-viewer" class="three-d-model-viewer"></div>
+
+
           </main>
         </div>
         <div id="overlay" class="overlay"></div>

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.Animal;
 import com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.Employee;
 import com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.Enviroment;
 import com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.RoleUser;
+import com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.Roles;
 import com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.Type;
 import com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.Users;
 import com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Repo.AnimalRepo;
@@ -29,10 +31,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,9 +75,9 @@ public class WebController {
                     .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
             model.addAttribute("isAdmin", isAdmin);
 
-            boolean isUser = auth.getAuthorities().stream()
-                    .anyMatch((authority -> authority.getAuthority().equals("USER")));
-            model.addAttribute("isUser", isUser);
+            boolean isEmployee = auth.getAuthorities().stream()
+                    .anyMatch((authority -> authority.getAuthority().equals("EMPLOYEE")));
+            model.addAttribute("isEmployee", isEmployee);
 
         }
 
@@ -136,15 +138,225 @@ public class WebController {
         return "redirect:/Login";
     }
 
-    @GetMapping(value = "/sec/admin")
-    public String AdminApp(Model model, Principal user, Authentication auth) {
+    @GetMapping(value = "/sec/admin/{id}")
+    public String AdminApp(Model model, Principal user, Authentication auth, @PathVariable("id") String view
+    ) {
 
         model.addAttribute("user", user.getName());
         boolean isAdmin = auth.getAuthorities().stream()
                 .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
         model.addAttribute("isAdmin", isAdmin);
 
+        switch (view) {
+            case "users":
+                List<Users> users = userRepo.findAll();
+                List<String> roles = new ArrayList<String>();
+                List<String> dateAdded = new ArrayList<String>();
+                List<Employee> empList = employeeRepo.findAllEmployees();
+                
+                for(int i =0; i<users.size(); i++){
+                    roles.add(roleRepo.findByUserId(users.get(i).getId()));
+                    dateAdded.add(roleUserRepo.findAll().get(i).getDate().toString());
+                }
+                
+                model.addAttribute("employees", empList);
+                model.addAttribute("dateAdded", dateAdded);
+                model.addAttribute("roles", roles);
+                model.addAttribute("users", users);
+                model.addAttribute("viewUsers", true);
+                break;
+            case "animals":
+                List<Animal> animals = animalRepo.findAll();
+                model.addAttribute("animals", animals);
+                model.addAttribute("viewAnimals", true);
+                break;
+            case "enviroments":
+                List<Enviroment> enviroments = enviromentRepo.findAll();
+                model.addAttribute("enviroments", enviroments);
+                model.addAttribute("viewEnviroments", true);
+                break;
+            case "types":
+                List<Type> types = typeRepo.findAll();
+                model.addAttribute("types", types);
+                model.addAttribute("viewTypes", true);
+                break;
+        }
         return "Admin";
+    }
+
+    @PostMapping(value = "sec/Admin/Modify/User/{selected_id}")
+    public String modifyUser(Model model, Principal user, Authentication auth,@PathVariable("selected_id") String selected_id, 
+    @RequestParam("email") String email,
+    @RequestParam("password") String pass,
+    @RequestParam("selected_enabled")Long enabled){
+        model.addAttribute("user", user.getName());
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
+        model.addAttribute("isAdmin", isAdmin);
+
+        logger.info("SELECTED ID: " + selected_id);
+        logger.info("SELECTED ENABLED: " + enabled);
+        logger.info(" SELECTED USER ROLE: " + roleRepo.findByUserId(Long.valueOf(selected_id)));
+        if(!email.equals("")){
+            userRepo.updateUserEmailById(Long.valueOf(selected_id), email);
+        }
+        if(!pass.equals("")){
+            userRepo.updateUserPassById(Long.valueOf(selected_id), new BCryptPasswordEncoder().encode(pass));
+        }
+        if(roleRepo.findByUserId(Long.valueOf(selected_id)).equals("EMPLOYEE")){
+            logger.info("ENTERING EMPLOYEE IF");
+            if(enabled.equals(Long.valueOf("1"))){
+                logger.info("ENABALING EMPLOYEE");
+                employeeRepo.enableEmployeeById(Long.valueOf(selected_id));
+            }else{
+                logger.info("DISABALING EMPLOYEE");
+                employeeRepo.disableEmployeeById(Long.valueOf(selected_id));
+            }
+        }
+        if(roleRepo.findByUserId(Long.valueOf(selected_id)).equals("USER")){
+            logger.info("ENTERING USER IF");
+            if(enabled.equals(Long.valueOf("1"))){
+                logger.info("ENABALING USER");
+                userRepo.enableUserById(Long.valueOf(selected_id));
+            }else{
+                logger.info("DISABALING USER");
+                userRepo.disableUserById(Long.valueOf(selected_id));
+            }
+        }
+        return"Admin";
+    }
+
+    @PostMapping(value = "sec/Admin/Modify/Animal/{selected_id}")
+    public String modifyAnimal(Model model, Principal user, Authentication auth,@PathVariable("selected_id") String selected_id,HttpServletRequest request,
+    @RequestParam("description") String description,
+    @RequestParam("img") MultipartFile img) throws IllegalStateException, IOException {
+        model.addAttribute("user", user.getName());
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
+        model.addAttribute("isAdmin", isAdmin);
+
+        UUID uuid = UUID.randomUUID();
+
+        if(!img.isEmpty()){
+            String actualPath = "./AnimalIMG/"+ user.getName() + "/" + uuid.toString() + img.getOriginalFilename();
+            String path = request.getSession().getServletContext().getRealPath(actualPath);
+            File dirPath = new File(path);
+            
+            if (!dirPath.exists()) {
+                dirPath.mkdirs();
+            }
+
+            animalRepo.updateIMGByAnimalId(actualPath ,Long.valueOf(selected_id));
+            img.transferTo(dirPath);
+        }
+
+        if(!description.equals("")){
+            animalRepo.updateDescriptionByAnimalId(description, Long.valueOf(selected_id));
+        }
+
+        
+        return"Admin";
+    }
+
+    @PostMapping(value = "sec/Admin/Modify/Enviroment/{selected_id}")
+    public String modifyEnviroment(Model model, Principal user, Authentication auth,@PathVariable("selected_id") String selected_id,
+    @RequestParam("description") String description) {
+        model.addAttribute("user", user.getName());
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
+        model.addAttribute("isAdmin", isAdmin);
+
+        if(!description.equals("")){
+            enviromentRepo.updateDescriptionByEnviromentId(description, Long.valueOf(selected_id));
+        }
+        return"Admin";
+    }
+
+    @PostMapping(value = "sec/Admin/Modify/Type/{selected_id}")
+    public String modifyType(Model model, Principal user, Authentication auth,@PathVariable("selected_id") String selected_id,
+    @RequestParam("description") String description) {
+        model.addAttribute("user", user.getName());
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
+        model.addAttribute("isAdmin", isAdmin);
+        if(!description.equals("")){
+            typeRepo.updateDescriptionByTypeId(description, Long.valueOf(selected_id));
+        }
+        
+        return"Admin";
+    }
+
+    @GetMapping(value = "sec/Admin/Modify/{id}/{selected_id}")
+    public String modifyAnithing(Model model, Principal user, Authentication auth, @PathVariable("id") String view,
+    @PathVariable("selected_id") String selected_id){
+        model.addAttribute("user", user.getName());
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
+        model.addAttribute("isAdmin", isAdmin);
+        
+        switch (view) {
+            case "user":
+                List<Users> users = userRepo.findAll(); 
+                List<Employee> empList = employeeRepo.findAllEmployees();
+                List<String> roles = new ArrayList<String>();
+                List<String> dateAdded = new ArrayList<String>();
+               
+
+
+                for(int i =0; i<users.size(); i++){
+                    roles.add(roleRepo.findByUserId(users.get(i).getId()));
+                    dateAdded.add(roleUserRepo.findAll().get(i).getDate().toString());
+                }
+                model.addAttribute("employees", empList);
+                model.addAttribute("dateAdded", dateAdded);
+                model.addAttribute("roles", roles);
+                model.addAttribute("users", users);
+                
+                model.addAttribute("viewUsers", true);
+                
+                Users user_selected = userRepo.findByUserId(Long.valueOf(selected_id));
+                Employee employee_selected = employeeRepo.findByUserId(Long.valueOf(selected_id));
+                String user_role = roleRepo.findByUserId(Long.valueOf(selected_id));
+                String date_added = roleUserRepo.findBYUserId(Long.valueOf(selected_id)).getDate().toString();
+
+                
+
+                model.addAttribute("employee_selected", employee_selected);
+                model.addAttribute("selected_user", user_selected);
+                model.addAttribute("selected_user_role", user_role);
+                model.addAttribute("selected_user_date_added", date_added);
+                model.addAttribute("user_selected", true);
+                break;
+            case "animals":
+                List<Animal> animals = animalRepo.findAll();
+                model.addAttribute("animals", animals);
+                model.addAttribute("viewAnimals", true);
+
+                Animal animal_selected = animalRepo.findByAnimalId(Long.valueOf(selected_id));
+                model.addAttribute("selected_animal", animal_selected);
+                model.addAttribute("animal_selected", true);
+                break;
+            case "enviroments":
+                List<Enviroment> enviroments = enviromentRepo.findAll();
+                model.addAttribute("enviroments", enviroments);
+                model.addAttribute("viewEnviroments", true);
+
+                Enviroment enviroment_selected = enviromentRepo.findByID(Long.valueOf(selected_id));
+                model.addAttribute("selected_enviroment", enviroment_selected);
+                model.addAttribute("enviroments_selected", true);
+                break;
+            case "types":
+                List<Type> types = typeRepo.findAll();
+                model.addAttribute("types", types);
+                model.addAttribute("viewTypes", true);
+
+                Type type_selected = typeRepo.findByID(Long.valueOf(selected_id));
+                model.addAttribute("selected_type", type_selected);
+                model.addAttribute("type_selected", true);
+                break;
+        }
+
+        return"Admin";
     }
 
     @GetMapping(value = "/sec/Admin/AddEmployee")
@@ -193,6 +405,8 @@ public class WebController {
                 roleUser.setDate(new Date(millis));
                 roleUser.setRole_id(roleRepo.findById(role).get());
                 roleUser.setUser_id(userRepo.findByUsername(username));
+
+                roleUserRepo.save(roleUser);
                 model.addAttribute("epmloyeeAdded", true);
 
             } else {

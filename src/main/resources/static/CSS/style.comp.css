@@ -7251,7 +7251,6 @@ hr {
 .main-view {
   align-items: center;
   display: flex;
-  min-height: calc(100vh - 143.2px);
   flex-direction: row;
   padding: 2rem;
   transition: all 0.3s;
@@ -7261,8 +7260,67 @@ hr {
     color: #000000;
     font-size: large; }
 
-.user-table {
-  width: 50%; }
+.admin-tables {
+  display: flex;
+  flex-direction: column;
+  min-width: 100%;
+  justify-content: center; }
 
-.animal-table {
-  width: 50%; }
+.selected-info-flex {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 120%; }
+
+.selected-info-flex-1 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; }
+
+.selected-info-flex-2 {
+  display: flex;
+  flex-direction: column; }
+
+.selected-info {
+  display: flex;
+  justify-content: center;
+  border-color: aqua;
+  border-top: 2px;
+  border-bottom: 2px; }
+
+.info-table {
+  width: 80%;
+  padding-left: 20%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; }
+  .info-table a {
+    color: black; }
+  .info-table label {
+    align-content: center;
+    text-align: center;
+    font-size: large; }
+
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_asc_disabled:before,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:before {
+  bottom: .5em; }
+
+.content {
+  width: 100%;
+  overflow: hidden;
+  padding-top: 20px; }
+  .content .row {
+    margin: 0; }
+
+.three-d-model-viewer {
+  width: 100%;
+  height: 900px;
+  background-color: white; }
