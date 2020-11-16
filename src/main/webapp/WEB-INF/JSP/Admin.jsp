@@ -175,7 +175,7 @@
                 <%if(request.getAttribute("animal_selected") != null) { 
                       Animal selected_animal = (Animal) request.getAttribute("selected_animal");%>
                       <div class="selected-info">
-                        <form method="POST" action="/sec/Admin/Modify/Animal/<%=selected_animal.getAnimlalID()%>">
+                        <form method="POST" action="/sec/Admin/Modify/Animal/<%=selected_animal.getAnimlalID()%>" enctype="multipart/form-data">
                           <div class="form__group">
                             <h1>Selected Animal</h1>
                             <p>If something isnt being changed leave it empty.</p>

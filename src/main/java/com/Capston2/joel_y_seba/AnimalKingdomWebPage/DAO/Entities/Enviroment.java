@@ -19,7 +19,7 @@ public class Enviroment {
     @Column(name = "name",  length = 25)
     private String name;
 
-    @Column(name = "description", length = 255)
+    @Column(name = "description", length = 750)
     private String description;
 
     @Column(name = "type",  length = 25)

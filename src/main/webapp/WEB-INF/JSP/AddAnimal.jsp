@@ -15,14 +15,14 @@
     <div class="home-page">
       <div class="home">
         <div class="heading-home">
-          <center><h2>Employee info</h2></center>
+          <center><h2>Animal info</h2></center>
         </div>
         <div class="wrapper">
           <%@ include file="Partials/sidebar.jsp" %>
           <main>
             <%@ include file="Partials/navbar.jsp" %>
              <div class="main-view">
-              <form method="POST" action="/sec/Admin/AddAnimal" class="input_forms"  enctype="multipart/form-data">
+              <form method="POST" action="/sec/Admin/AddAnimal" class="input_forms" enctype="multipart/form-data">
                 <div class="form__group">
                   <input type="text" name="name" id="name" placeholder="Name" class="form__input">
                   <br>
@@ -34,19 +34,32 @@
                     rows="3"
                     placeholder="description"
                     name="description"
-                    maxlength="200">
+                    maxlength="750">
                   </textarea>
                   <br>
+                  <label> Image:
+                    <br>
+                    <input
+                    type="file"
+                    accept="img/*"
+                    class="btn btn-info"
+                    name="img"
+                    />
+                  </label>
+                  <br>
+                  <label> 3d Model Folder (.gltf only):
+                    <br>
+                    <input
+                    type="file"
+                    class="btn btn-info"
+                    name="obj3d"
+                    />
+                  </label>
                   
-                  <input
-                  type="file"
-                  accept="img/*"
-                  class="btn btn-info"
-                  name="img"
-                  />
                   <br>
                   
                   <label>Select an Enviroment</label>
+                  <br>
                   <select class="selectpicker" name="enviroment_search">
                     <% List<Enviroment> env = (List<Enviroment>) request.getAttribute("env");
                       for(int i =0; i < env.size(); i++){
@@ -57,6 +70,7 @@
                   <br>
                   
                   <label>Select the Race of the Animal</label>
+                  <br>
                   <select class="selectpicker" name="type_search">
                     <% List<Type> type = (List<Type>) request.getAttribute("type");
                       for(int i =0; i < type.size(); i++){

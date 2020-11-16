@@ -30,7 +30,7 @@
                     rows="3"
                     placeholder="description"
                     name="description"
-                    maxlength="200">
+                    maxlength="750">
                   </textarea>
                   <br>
                   <button class="btn-submit" type="submit">Enter new enviroment</button>

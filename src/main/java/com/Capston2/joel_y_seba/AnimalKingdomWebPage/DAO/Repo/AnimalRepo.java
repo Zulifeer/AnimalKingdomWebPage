@@ -1,5 +1,7 @@
 package com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Repo;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import com.Capston2.joel_y_seba.AnimalKingdomWebPage.DAO.Entities.Animal;
@@ -10,11 +12,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface AnimalRepo extends JpaRepository<Animal, Long>{
+
+    @Query(nativeQuery = true, value = "select * from animal where enviromentid = ?1")
+    List<Animal> findByTypeId(Long id);
+    
     @Query("SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM Animal WHERE name = :name")
     boolean itExistsByName(@Param("name") String name);
 
     @Query(nativeQuery = true, value = "select * from animal where animalid = ?1")
     Animal findByAnimalId(Long id);
+    @Query(nativeQuery = true, value = "select * from animal where name = ?1")
+    Animal findByName(String name);
 
     @Modifying()
     @Transactional()
@@ -25,4 +33,6 @@ public interface AnimalRepo extends JpaRepository<Animal, Long>{
     @Transactional()
     @Query(nativeQuery = true, value = "update animal set description = ?1 where animalid = ?2")
     int updateDescriptionByAnimalId(String description,Long id);
+
+
 }

@@ -19,7 +19,7 @@ public class Type {
     @Column(name = "name",  length = 25)
     private String name;
 
-    @Column(name="description",  length = 255)
+    @Column(name="description",  length = 750)
     private String description;
 
     public Type(Long typeID, String name, String description) {

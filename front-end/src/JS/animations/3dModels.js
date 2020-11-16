@@ -7,58 +7,63 @@ $(document).ready(function () {
     var container, control, mixer, clock;
     var camera, scene, renderer, model;
 
+    container = document.getElementById("3d-model");
 
-    container = document.getElementById("3d-model-viewer");
-    const w = container.offsetWidth;
-    const h = container.offsetHeight;
+    let gltf_loader = new GLTFLoader();
 
-    scene = new THREE.Scene();
-    clock = new THREE.Clock();
+    if(container != null){
+        var w = container.offsetWidth;
+        var h = container.offsetHeight;
+        scene = new THREE.Scene();
+        clock = new THREE.Clock();
+        camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 2000);
+        camera.position.set(-2, 2, 10);
+        camera.lookAt(scene.position);
 
-    camera = new THREE.PerspectiveCamera(75, w / h, 0.75, 100);
-    camera.position.set(1, 1, 20);
-    camera.lookAt(scene.position);
+        renderer = new THREE.WebGLRenderer({
+            alpha: true
+        }); 
+        renderer.setClearColor( 0xff0000, 0 );
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(w, h);
+        container.appendChild(renderer.domElement);
 
-    renderer = new THREE.WebGLRenderer({
-        antialias: true
-      }); 
-    renderer.setClearColor("white");
-    renderer.setSize(w, h);
-    container.appendChild(renderer.domElement);
+        control = new OrbitControls(camera, renderer.domElement);
+        control.update();
+        var abint = new THREE.AmbientLight(0xffffff);
+        scene.add(abint);
 
-    control = new OrbitControls(camera, renderer.domElement);
-    control.update();
-    const abint = new THREE.AmbientLight("#CCC",4);
-    scene.add(abint);
-
-    var gltf_loader = new GLTFLoader();
-    gltf_loader.load('Animal_3D_Scenes/model_54a_-_caribbean_reef_shark/scene.gltf',
-        function(gltf){
-            model = gltf.scene;
-            mixer = new THREE.AnimationMixer(gltf.scene);
-            var action = mixer.clipAction(gltf.animations[0]);
-            action.play();
-            scene.add(gltf.scene);
-
-            console.log("Adding gltf.scene");
-        },
-        function(xhr){
-            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-        },
-        function(error){
-            console.error("Error has happened: " + error);
-        });
-
-
-
-    function animate(){
-        requestAnimationFrame(animate);
-        var delta = clock.getDelta();
-        if(model)mixer.update(delta);
-        renderer.render(scene, camera);
         
+        gltf_loader.load(model_path,
+            function(gltf){
+                model = gltf.scene;
+                mixer = new THREE.AnimationMixer(gltf.scene);
+                var action = mixer.clipAction(gltf.animations[0]);
+                action.play();
+                scene.add(gltf.scene);
+
+                console.log("Adding gltf.scene");
+            },
+            function(xhr){
+                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+            },
+            function(error){
+                console.error("Error has happened: " + error);
+            });
+
+
+
+        function animate(){
+            requestAnimationFrame(animate);
+            var delta = clock.getDelta();
+            if(model)mixer.update(delta);
+            renderer.render(scene, camera);
+
+        }
+        animate();
+
     }
-    animate();
+    
     
 
 }); 

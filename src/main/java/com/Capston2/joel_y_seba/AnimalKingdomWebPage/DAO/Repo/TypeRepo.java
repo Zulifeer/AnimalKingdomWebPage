@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface TypeRepo extends JpaRepository<Type,Long> {
-    @Query(nativeQuery = true, value = "select * from type where user_id = ?1")
+    @Query(nativeQuery = true, value = "select * from type where name = ?1")
     Type findByName(String name);
 
     @Query("SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM Type WHERE name = :name")

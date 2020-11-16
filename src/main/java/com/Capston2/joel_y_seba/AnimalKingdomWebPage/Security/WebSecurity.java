@@ -52,9 +52,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter{
         */
         
         http.logout().and().authorizeRequests()
-        .antMatchers("/", "/login", "/signup", "/SignUp","/src/main/resources/**", "/CSS/**", "/JS/**","/AnimalIMG/**","/Animal_3D_Scenes/**" ).permitAll()
+        .antMatchers("/animals/**","/", "/login", "/signup", "/SignUp","/src/main/resources/**", "/CSS/**", "/JS/**","/AnimalIMG/**","/Animal_3D_Scenes/**","/Videos/**","/Home_1/**" ).permitAll()
         .antMatchers("/logout").hasAnyAuthority("ADMIN", "USER")
-        .antMatchers("/animals", "/sec/admin/**","/sec/Admin/Modify/**","/sec/Admin/AddEmployee","/sec/Admin/AddAnimal","/sec/Admin/AddEnviroment", "/sec/Admin/AddType").hasAuthority("ADMIN").anyRequest().denyAll()
+        .antMatchers("/sec/admin/**","/sec/Admin/Modify/**","/sec/Admin/AddEmployee","/sec/Admin/AddAnimal","/sec/Admin/AddEnviroment", "/sec/Admin/AddType").hasAuthority("ADMIN").anyRequest().denyAll()
         .and().formLogin().loginPage("/login").loginProcessingUrl("/process_login").successHandler(new HandelerAuthentication()).and()
         .sessionManagement().maximumSessions(2);
 

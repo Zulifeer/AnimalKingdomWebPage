@@ -25,7 +25,7 @@
       </li>
       <% } } %>
       <li class="sidebar-item">
-        <a class="btn" href="/">
+        <a class="btn" href="/Home_1/allanimals">
           <i class="fas fa-home"></i>
           Home
         </a>

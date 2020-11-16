@@ -1,12 +1,12 @@
 package com.Capston2.joel_y_seba.AnimalKingdomWebPage.Controllers;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.security.Principal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,6 +35,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +68,41 @@ public class WebController {
     @Autowired
     EmployeeRepo employeeRepo;
 
+    @GetMapping(value = "/Home_1/{selection}")
+    public String Home_1(Model model, Principal user, Authentication auth, @PathVariable("selection") String selection){
+        if (user != null && auth.isAuthenticated()) {
+            if (userRepo.findByUsername(user.getName()).getEnabled() != 1) {
+                model.addAttribute("user", user.getName());
+                return "AccountDesaible";
+            }
+            model.addAttribute("user", user.getName());
+            boolean isAdmin = auth.getAuthorities().stream()
+                    .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
+            model.addAttribute("isAdmin", isAdmin);
+
+            boolean isEmployee = auth.getAuthorities().stream()
+                    .anyMatch((authority -> authority.getAuthority().equals("EMPLOYEE")));
+            model.addAttribute("isEmployee", isEmployee);
+
+        }
+        List<Type> allTypes = typeRepo.findAll();
+        
+        model.addAttribute("allTypes", allTypes);
+        if(selection.equals("allanimals")){
+            List<Animal> allAnimals = animalRepo.findAll();
+            //List<Enviroment> allEnviroments = enviromentRepo.findAll();
+            model.addAttribute("allAnimals", allAnimals);
+            //model.addAttribute("allEnviroments", allEnviroments);
+        }else if(selection != null){
+            List<Animal> selected_animals = animalRepo.findByTypeId(typeRepo.findByName(selection).getTypeID());
+            model.addAttribute("selected_animals", selected_animals);
+            model.addAttribute("animal_selected", true);
+        }
+        
+
+        return"Home_1";
+    }
+
     @GetMapping(value = { "/", "/index" })
     public String Home(Model model, Principal user, Authentication auth) {
         if (user != null && auth.isAuthenticated()) {
@@ -80,6 +120,9 @@ public class WebController {
             model.addAttribute("isEmployee", isEmployee);
 
         }
+        List<Animal> allAnimals = animalRepo.findAll();
+        model.addAttribute("allAnimals", allAnimals);
+            
 
         return "Home";
     }
@@ -89,14 +132,24 @@ public class WebController {
 
         if (user != null && ((Authentication) user).isAuthenticated()) {
             // logger.info("USER NAME: " + user.getName());
-            return "redirect:/";
+            return "redirect:/Home_1";
         }
 
         return "Login";
     }
 
-    @GetMapping(value = "/animals")
-    public String Animals() {
+    @GetMapping(value = "/animals/{animal}")
+    public String Animals(Model model, Principal user, Authentication auth,
+    @PathVariable("animal") String selected_animal) {
+        if(user != null){
+            model.addAttribute("user", user.getName());
+            boolean isAdmin = auth.getAuthorities().stream()
+                    .anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
+            model.addAttribute("isAdmin", isAdmin);
+        }
+        
+        Animal animal = animalRepo.findByName(selected_animal);
+        model.addAttribute("animal", animal);
 
         return "Animals";
     }
@@ -439,9 +492,10 @@ public class WebController {
             @RequestParam("name") String name, @RequestParam("enviroment_search") Long enviroment_id, 
             @RequestParam("description") String description,
             @RequestParam("type_search") Long type_id,
-            @RequestParam("img") MultipartFile img) throws IllegalStateException, IOException {
+            @RequestParam("img") MultipartFile img,
+            @RequestParam("obj3d") MultipartFile obj3d) throws IllegalStateException, IOException {
         
-                model.addAttribute("user", user.getName());
+        model.addAttribute("user", user.getName());
         boolean isAdmin = auth.getAuthorities().stream().anyMatch((authority -> authority.getAuthority().equals("ADMIN")));
         model.addAttribute("isAdmin", isAdmin);
         
@@ -453,6 +507,7 @@ public class WebController {
             newAnimal.setDescription(description);
             newAnimal.setEnviromentId(enviromentRepo.findByID(enviroment_id));
             newAnimal.setTypeID(typeRepo.findByID(type_id));
+            
             if(!img.isEmpty()){
                 String actualPath = "/AnimalIMG/"+ user.getName() + "/" + uuid.toString() + img.getOriginalFilename();
                 String path = request.getSession().getServletContext().getRealPath(actualPath);
@@ -466,7 +521,53 @@ public class WebController {
                 img.transferTo(dirPath);
                 
             }else{
-                newAnimal.setImagePath("/IMG/img-not-available.png");
+                newAnimal.setImagePath("/AnimalIMG/img-not-available.png");
+            }
+
+            if(!obj3d.isEmpty()){
+                logger.info("obj3d has something");
+                logger.info("obj3d FILE NAME: " + obj3d.getOriginalFilename());
+                File zip = File.createTempFile(UUID.randomUUID().toString(), "temp");
+                FileOutputStream o = new FileOutputStream(zip);
+                if(IOUtils.copy(obj3d.getInputStream(), o) > 0){
+                    logger.info("IOUTILS COPIED FILE");
+                }
+                o.close();
+                String obj3d_path = "/Animal_3D_Scenes/" + name.replace(" ", "");
+                String location = request.getSession().getServletContext().getRealPath(obj3d_path);
+                File dir3dpath = new File(location);
+                if(!dir3dpath.exists()){
+                    logger.info("MAKING DIR");
+                    dir3dpath.mkdirs();
+                }
+
+                try {
+                    
+                    logger.info("ENTERING TRY CATCH");
+                    ZipFile zipFile = new ZipFile(zip);
+                    zipFile.extractAll(location);
+                    logger.info("EXTRACTING TRY CATCH");
+                } catch (ZipException e) {
+                    e.printStackTrace();
+                }finally{
+                    zip.delete();
+                }
+
+                File [] temp = dir3dpath.listFiles();
+                for(File obj: temp){
+                    if(obj.isFile()){
+                        logger.info("File: " + obj.getName());
+                        if(obj.getName().equals("scene.gltf")){
+                            logger.info("/Animal_3D_Scenes/"+ name.replace(" ", "") + "/"+obj.getName());
+                            newAnimal.setModel_Path("/Animal_3D_Scenes/"+ name.replace(" ", "") + "/"+obj.getName());
+                            break;
+                        }
+                    }else if (obj.isDirectory()){
+                        logger.info("Directory: " );
+                    }
+                }
+            }else{
+                logger.info("obj3d has nothing");
             }
 
             animalRepo.save(newAnimal);

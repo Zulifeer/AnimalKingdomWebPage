@@ -21,11 +21,14 @@ public class Animal {
     @Column(name = "name", length = 25, nullable = false)
     private String name;
 
-    @Column(name = "description", length = 255)
+    @Column(name = "description", length = 750)
     private String description;
 
     @Column(name = "imagePath", length = 255)
     private String imagePath;
+
+    @Column(name = "model_Path", length = 255)
+    private String model_Path;
 
     @ManyToOne
     @JoinColumn(name = "enviromentID", nullable = false)
@@ -75,21 +78,6 @@ public class Animal {
         this.typeID = typeID;
     }
 
-    @Override
-    public String toString() {
-        return "Animal [animlalID=" + animlalID + ", description=" + description + ", enviromentId=" + enviromentId
-                + ", name=" + name + ", typeID=" + typeID + ", imagePath=" + imagePath +"]";
-    }
-
-    public Animal(Long animlalID, String name, String description, Enviroment enviromentId, Type typeID, String imagePath) {
-        this.animlalID = animlalID;
-        this.name = name;
-        this.description = description;
-        this.enviromentId = enviromentId;
-        this.typeID = typeID;
-        this.imagePath = imagePath;
-    }
-
     public Animal() {
     }
 
@@ -99,6 +87,32 @@ public class Animal {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public String getModel_Path() {
+        return model_Path;
+    }
+
+    public void setModel_Path(String model_Path) {
+        this.model_Path = model_Path;
+    }
+
+    public Animal(Long animlalID, String name, String description, String imagePath, String model_Path,
+            Enviroment enviromentId, Type typeID) {
+        this.animlalID = animlalID;
+        this.name = name;
+        this.description = description;
+        this.imagePath = imagePath;
+        this.model_Path = model_Path;
+        this.enviromentId = enviromentId;
+        this.typeID = typeID;
+    }
+
+    @Override
+    public String toString() {
+        return "Animal [animlalID=" + animlalID + ", description=" + description + ", enviromentId=" + enviromentId
+                + ", imagePath=" + imagePath + ", model_Path=" + model_Path + ", name=" + name + ", typeID=" + typeID
+                + "]";
     }
 
     
