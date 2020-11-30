@@ -52,7 +52,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter{
         */
         
         http.logout().and().authorizeRequests()
-        .antMatchers("/animals/**","/", "/login", "/signup", "/SignUp","/src/main/resources/**", "/CSS/**", "/JS/**","/AnimalIMG/**","/Animal_3D_Scenes/**","/Videos/**","/Home_1/**" ).permitAll()
+        .antMatchers("/animals/**","/","/unity/api/**" ,"/login", "/signup", "/SignUp","/src/main/resources/**", "/CSS/**", "/JS/**","/AnimalIMG/**","/Animal_3D_Scenes/**","/Videos/**","/Home_1/**" ).permitAll()
         .antMatchers("/logout").hasAnyAuthority("ADMIN", "USER")
         .antMatchers("/sec/admin/**","/sec/Admin/Modify/**","/sec/Admin/AddEmployee","/sec/Admin/AddAnimal","/sec/Admin/AddEnviroment", "/sec/Admin/AddType").hasAuthority("ADMIN").anyRequest().denyAll()
         .and().formLogin().loginPage("/login").loginProcessingUrl("/process_login").successHandler(new HandelerAuthentication()).and()
